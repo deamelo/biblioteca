@@ -1,0 +1,74 @@
+{% extends 'base.html' %} {% block 'titulo' %} Cadastro {% endblock 'titulo' %}
+{% block 'conteudo' %}
+<div class="container">
+    <br />
+    {% if status == '0' %}
+        <div class="alert alert-success" role="alert">
+            Cadastro realizado com sucesso
+        </div>
+    {% endif %}
+    {% if status == '1'%}
+        <div class="alert alert-danger" role="alert">
+        Nome e email não podem estar vazios.
+        </div>
+    {% endif %}
+
+    {% if status == '2'%}
+        <div class="alert alert-danger" role="alert">
+            Sua senha deve ter pelo menos 6 caracteres
+        </div>
+    {% endif %}
+    {% if status == '3'%}
+        <div class="alert alert-danger" role="alert">
+            Usuário já existe no sistema
+        </div>
+    {% endif %}
+    {% if status == '4'%}
+        <div class="alert alert-danger" role="alert">
+            Erro interno do sistema
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md">
+            <h1>Cadastre-se</h1>
+            <hr />
+
+            <form method="POST" action={% url "valida_cadastro" %}>
+                {% csrf_token %}
+                <label>Nome</label>
+                <input
+                    type="text"
+                    name="nome"
+                    class="form-control"
+                    placeholder="Nome"
+                />
+                <br />
+                <label>Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    placeholder="Email"
+                />
+                <br />
+                <label>Senha</label>
+                <input
+                    type="password"
+                    name="senha"
+                    class="form-control"
+                    placeholder="Senha"
+                />
+                <br />
+                <input
+                    type="submit"
+                    class="btn btn-success btn-lg"
+                    value="Salvar"
+                />
+                <a href='{% url "login" %}' class='btn btn-info btn-lg'>Login</a>
+            </form>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+</div>
+{% endblock 'conteudo' %}

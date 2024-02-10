@@ -1,6 +1,9 @@
 {% extends "base.html" %} {% block 'conteudo' %}
 
 <div class="container">
+    <br />
+    <a href='{% url "sair" %}' class="btn btn-danger">Sair</a>
+    <br />
     <div class="row">
         {% for livro in livros %}
         <div class="col-md">
@@ -13,7 +16,7 @@
                     >
                         Emprestado:
                     </h6>
-                    {% if livro.esprestado %}
+                    {% if livro.emprestado %}
                     <svg
                         style="color: green; display: inline"
                         xmlns="http://www.w3.org/2000/svg"

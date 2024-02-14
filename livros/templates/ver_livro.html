@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% block 'conteudo' %}
+{% extends "base.html" %}
+{% load filtros %}
+{% block 'conteudo' %}
 <div class="container">
     <br />
     <form action='#' method='POST'> {% csrf_token %}
@@ -52,17 +54,19 @@
             {% endfor %}
         </select>
         <br>
-        <br>
         <label>Emprestado: &nbsp;</label>
         {% if livro.emprestado %}
         <input
-            style="transform: scale(1.5)"
             checked
+            style="transform: scale(1.5); cursor: pointer"
             type="checkbox"
             name="emprestado"
         />
         {% else %}
-        <input style="transform: scale(1.5)" type="checkbox" name="emprestado" />
+        <input
+            style="transform: scale(1.5); cursor: pointer"
+            type="checkbox"
+            name="emprestado" />
         {% endif %}
         <br />
         <br />
@@ -90,9 +94,9 @@
                     {% endif %}
                     <td>{{i.data_emprestimo}}</td>
                     <td>{{i.data_devolucao}}</td>
-                    <td>tempo</td>
+                    <td>{{i.data_devolucao|tempo_duracao:i.data_emprestimo}} dias</td>
                 </tr>
-            {% endfor %}  
+            {% endfor %}
         </tbody>
     </table>
 </div>

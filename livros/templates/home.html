@@ -2,7 +2,6 @@
 
 <div class="container">
     <br />
-    <a href='{% url "sair" %}' class="btn btn-danger">Sair</a>
     <br />
     <div class="row">
         {% for livro in livros %}
@@ -48,9 +47,11 @@
                     <br />
                     <a
                         href='{% url "ver_livro" livro.id %}'
-                        class="btn btn-info"
-                        >+</a
+                        class="btn btn-info btn-sm"
+                        style="font-weight: bold"
                     >
+                        <strong>+</strong>
+                    </a>
                 </div>
             </div>
         </div>

@@ -14,6 +14,8 @@ def home(request):
         form.fields['usuario'].initial = request.session['usuario']
         form.fields['categoria'].queryset = Categoria.objects.filter(usuario = usuario)
         form_categoria = CategoriaLivro()
+        usuarios = Usuario.objects.all()
+        emprestando = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
         return render(request, 'home.html',
             {
                 'livros': livros,
@@ -21,6 +23,8 @@ def home(request):
                 'form':form,
                 'status_categoria': status_categoria,
                 'form_categoria': form_categoria,
+                'usuarios': usuarios,
+                'emprestando': emprestando
             })
     else:
         return redirect('/auth/login/?status=2')
@@ -37,6 +41,8 @@ def ver_livro(request, id):
             form.fields['usuario'].initial = request.session['usuario']
             form.fields['categoria'].queryset = Categoria.objects.filter(usuario = usuario)
             form_categoria = CategoriaLivro()
+            usuarios = Usuario.objects.all()
+            emprestando = Livros.objects.filter(usuario = usuario).filter(emprestado = False)
             return render(request, 'ver_livro.html',
                 {
                     'livro':livro,
@@ -46,6 +52,8 @@ def ver_livro(request, id):
                     'form':form,
                     'id_livro': id,
                     'form_categoria': form_categoria,
+                    'usuarios': usuarios,
+                    'emprestando': emprestando
                 }
             )
         else:
@@ -77,3 +85,19 @@ def cadastrar_categoria(request):
         return redirect('/livros/home?cadastro_categoria=1')
     else:
         return HttpResponse('erro')
+
+
+def cadastrar_emprestimo(request):
+    if request.method == 'POST':
+        nome_solicitante = request.POST.get('nome_solicitante')
+        solicitante_anonimo = request.POST.get('solicitante_anonimo')
+        livro_emprestado = request.POST.get('livro_emprestado')
+        if solicitante_anonimo:
+            emprestimo = Emprestimos(solicitante_anonimo = solicitante_anonimo, livro_id = livro_emprestado)
+        else:
+            emprestimo = Emprestimos(nome_solicitante_id = nome_solicitante, livro_id = livro_emprestado)
+        emprestimo.save()
+        livro = Livros.objects.get(id=livro_emprestado)
+        livro.emprestado = True
+        livro.save()
+        return HttpResponse('success')

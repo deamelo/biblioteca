@@ -43,7 +43,7 @@ def ver_livro(request, id):
         livro = Livros.objects.get(id = id)
         if request.session.get('usuario') == livro.usuario.id:
             usuario = Usuario.objects.get(id = request.session['usuario'])
-            categoria = Categoria.objects.filter(usuario = request.session.get('usuario'))
+            categoria_livro = Categoria.objects.filter(usuario = request.session.get('usuario'))
             emprestimo = Emprestimos.objects.filter(livro = livro)
             form = CadastroLivro()
             form.fields['usuario'].initial = request.session['usuario']
@@ -57,7 +57,7 @@ def ver_livro(request, id):
             return render(request, 'ver_livro.html',
                 {
                     'livro':livro,
-                    'categoria': categoria,
+                    'categoria_livro': categoria_livro,
                     'emprestimo': emprestimo,
                     'usuario_logado': request.session.get('usuario'),
                     'form':form,
@@ -112,7 +112,7 @@ def cadastrar_emprestimo(request):
         livro = Livros.objects.get(id=livro_emprestado)
         livro.emprestado = True
         livro.save()
-        return HttpResponse('success')
+        return redirect('/livros/home')
 
 def devolver_livro(request):
     id = request.POST.get('id_devolucao')
@@ -122,4 +122,46 @@ def devolver_livro(request):
     emprestimo.save()
     devolucao.emprestado = False
     devolucao.save()
-    return HttpResponse('Livro devolvido')
+    return redirect('/livros/home')
+
+def editar_livro(request):
+    livro_id = request.POST.get('livro_id')
+    nome = request.POST.get('nome')
+    autor = request.POST.get('autor')
+    co_autor = request.POST.get('co_autor')
+    categoria_id = request.POST.get('categoria_id')
+
+    categoria = Categoria.objects.get(id = categoria_id)
+    print('categoria_id:', categoria_id)
+    print('categoria:', categoria)
+
+    livro = Livros.objects.get(id=livro_id)
+
+    if livro.usuario.id == request.session['usuario']:
+        livro.nome = nome
+        livro.autor = autor
+        livro.co_autor = co_autor
+        livro.categoria = categoria
+        livro.save()
+        return redirect(f'/livros/ver_livro/{livro_id}')
+    else:
+        return redirect('/auth/sair')
+
+def meus_emprestimos(request):
+    usuario = Usuario.objects.get(id = request.session['usuario'])
+    emprestimos = Emprestimos.objects.filter(nome_solicitante = usuario)
+
+    return render(request, 'meus_emprestimos.html', {'usuario_logado': request.session['usuario'], 'emprestimos': emprestimos})
+
+def avaliacao(request):
+    id_emprestimo = request.POST.get('id_emprestimo')
+    opcoes = request.POST.get('opcoes')
+    id_livro = request.POST.get('id_livro')
+
+    emprestimo = Emprestimos.objects.get(id = id_emprestimo)
+    if emprestimo.livro.usuario.id == request.session['usuario']:
+        emprestimo.avaliacao = opcoes
+        emprestimo.save()
+        return redirect(f'/livros/ver_livro/{id_livro}')
+    else:
+        return redirect('/auth/sair')

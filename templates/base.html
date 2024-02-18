@@ -20,11 +20,17 @@
         <nav class="navbar navbar-dark bg-dark">
             <a class="navbar-brand" href=" {% url "home" %}">Controle de livros</a>
             {% if usuario_logado %}
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    Cadastrar
-                </button>
-                <a href='{% url "sair" %}' class="btn btn-danger">Sair</a>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Menu
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                    <button type="button" class="btn btn-primary dropdown-item" data-toggle="modal" data-target="#exampleModal">Cadastrar</button>
+                    <a href='{% url "sair" %}' class="dropdown-item btn btn-danger">Sair</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item">Total: {{total_livros}}</a>
+                    </div>
+                </div>
             {% endif %}
         </nav>
 
@@ -48,12 +54,13 @@
                         <button style='margin-left: 10px' onclick='mostrar_form(1)'  class='btn btn-primary'>Categoria</button>
                         <button style='margin-left: 10px' onclick='mostrar_form(2)' class='btn btn-warning'>Livro</button>
                         <button style='margin-left: 10px' onclick='mostrar_form(3)' class='btn btn-info'>Emprestimo</button>
+                        <button style='margin-left: 10px' onclick='mostrar_form(4)' class='btn btn-danger'>Devolução</button>
                         <br>
                         <br>
                         <div
                             id='livro'
                             style='display:none'>
-                            <form 
+                            <form
                             action='{% url "cadastrar_livro" %}' method='POST'>{% csrf_token %}
                                 <table>
                                     {{form.as_table}}
@@ -103,7 +110,7 @@
                                >
                                <br>
                                <select class='form-control' name='livro_emprestado'>
-                                {% for livro in emprestando %}
+                                {% for livro in emprestar %}
                                     <option value={{livro.id}}>
                                         {{livro.nome}}
                                     </option>
@@ -117,6 +124,17 @@
                                >
                             </form>
                         </div>
+                        <div style='display:none' id='devolucao'>
+                            <form action='{% url "devolver_livro" %}' method='POST'> {% csrf_token %}
+                                <select name='id_devolucao' class='form-control'>
+                                    {% for livro in emprestados  %}
+                                        <option value='{{livro.id}}'>{{livro.nome}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <input type="submit" class='btn btn-success' value='Devolver'>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 </div>
@@ -127,17 +145,30 @@
                     categoria = document.getElementById('categoria')
                     livro = document.getElementById('livro')
                     emprestimo = document.getElementById('emprestimo')
+                    devolucao = document.getElementById('devolucao')
 
                     if(tipo == 1) {
                         categoria.style.display = 'block'
+
                         livro.style.display = 'none'
                         emprestimo.style.display = 'none'
+                        devolucao.style.display = 'none'
                     }else if(tipo == 2) {
                         livro.style.display = 'block'
+
                         categoria.style.display = 'none'
                         emprestimo.style.display = 'none'
+                        devolucao.style.display = 'none'
                     }else if(tipo == 3) {
                         emprestimo.style.display = 'block'
+
+                        livro.style.display = 'none'
+                        categoria.style.display = 'none'
+                        devolucao.style.display = 'none'
+                    }else if(tipo == 4) {
+                        devolucao.style.display = 'block'
+
+                        emprestimo.style.display = 'none'
                         livro.style.display = 'none'
                         categoria.style.display = 'none'
                     }

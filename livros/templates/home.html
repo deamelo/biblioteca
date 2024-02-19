@@ -14,6 +14,11 @@
         <div class="col-md">
             <div class="card" style="width: 18rem">
                 <div class="card-body">
+                    <img
+                        width="100%"
+                        src="{{livro.img.url}}"
+                        class="rounded-circle"
+                    />
                     <h5 class="card-title">{{livro.nome}}</h5>
                     <h6
                         style="display: inline"
@@ -50,6 +55,7 @@
                         />
                     </svg>
                     {% endif %}
+                    <br />
                     <br />
                     <a
                         href='{% url "ver_livro" livro.id %}'

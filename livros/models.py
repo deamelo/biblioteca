@@ -13,6 +13,7 @@ class Categoria(models.Model):
         return self.nome
 
 class Livros(models.Model):
+    img = models.ImageField(upload_to='capa_livro', null=True, blank=True)
     nome = models.CharField(max_length=100)
     autor = models.CharField(max_length=30)
     co_author = models.CharField(max_length=30, blank=True, null=True)

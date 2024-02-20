@@ -62,7 +62,7 @@
                             id='livro'
                             style='display:none'>
                             <form
-                            action='{% url "cadastrar_livro" %}' method='POST'>{% csrf_token %}
+                            action='{% url "cadastrar_livro" %}' method='POST' enctype='multipart/form-data'>{% csrf_token %}
                                 <table>
                                     {{form.as_table}}
                                 </table>
